@@ -23,6 +23,10 @@ import {
 import { browserSupabase } from "@/lib/supabase/client";
 import { PAGES, pageFor } from "@/lib/messenger/pages";
 import { replyWindowOpen, sendErrorText } from "@/lib/messenger/graph-client";
+import {
+  conversationInitials,
+  conversationName,
+} from "@/lib/messenger/identity";
 import type { Conversation, InboxPage, Message } from "@/lib/messenger/types";
 import { LoginForm } from "./login-form";
 
@@ -56,11 +60,7 @@ const dateFormat = new Intl.DateTimeFormat("en-PH", {
   day: "numeric",
   year: "numeric",
 });
-function guestName(conversation: Conversation) {
-  return `Guest · ${conversation.customer_psid.slice(-6)}`;
-}
-
-function Avatar({ initials = "G" }: { initials?: string }) {
+function Avatar({ initials = "?" }: { initials?: string }) {
   return (
     <div className="avatar" aria-hidden="true">
       {initials}
@@ -74,7 +74,7 @@ function BusinessBadge({ id }: { id: string }) {
   return (
     <span className={`business-badge ${page.color}`}>
       <img src={page.logo} alt="" />
-      <span>{page.short}</span>
+      <span className="business-badge-label">{page.name}</span>
     </span>
   );
 }
@@ -345,7 +345,7 @@ export function Inbox({ operatorName }: { operatorName: string }) {
   const filtered = useMemo(
     () =>
       data.conversations.filter((conversation) =>
-        `${guestName(conversation)} ${conversation.customer_psid} ${conversation.last_preview} ${pageFor(conversation.page_id)?.name}`
+        `${conversationName(conversation)} ${conversation.customer_psid} ${conversation.last_preview} ${pageFor(conversation.page_id)?.name}`
           .toLowerCase()
           .includes(query.toLowerCase()),
       ),
@@ -748,10 +748,10 @@ export function Inbox({ operatorName }: { operatorName: string }) {
                       setMobileChat(true);
                     }}
                   >
-                    <Avatar />
+                    <Avatar initials={conversationInitials(item)} />
                     <span className="conversation-content">
                       <span className="conversation-top">
-                        <strong>{guestName(item)}</strong>
+                        <strong>{conversationName(item)}</strong>
                         <time dateTime={item.last_message_at}>
                           {dateFormat.format(new Date(item.last_message_at))}
                         </time>
@@ -828,9 +828,9 @@ export function Inbox({ operatorName }: { operatorName: string }) {
                     Back
                   </button>
                   <div className="chat-person">
-                    <Avatar />
-                    <div>
-                      <h2>{guestName(conversation)}</h2>
+                    <Avatar initials={conversationInitials(conversation)} />
+                    <div className="chat-identity">
+                      <h2>{conversationName(conversation)}</h2>
                       <p>Facebook Messenger</p>
                       <BusinessBadge id={conversation.page_id} />
                     </div>
@@ -916,7 +916,7 @@ export function Inbox({ operatorName }: { operatorName: string }) {
                         ? "The 24-hour reply window is closed. A new guest message will reopen it."
                         : rateLimited
                           ? "Messenger is limiting replies for this restaurant. Try again later."
-                          : `Replying as ${pageFor(conversation.page_id)?.short}`)}
+                          : `Replying as ${pageFor(conversation.page_id)?.name}`)}
                 </div>
                 <form className="composer" noValidate onSubmit={send}>
                   <label className="sr-only" htmlFor="reply-text">

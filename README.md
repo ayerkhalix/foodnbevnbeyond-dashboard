@@ -49,13 +49,13 @@ Outbound calls are pinned to Graph API `v26.0` in `lib/messenger/graph.ts`. Requ
 
 - `messenger_pages` contains the four Page IDs and their latest send error or rate-limit cooldown.
 - `messenger_page_members` assigns an Auth user to a Page. Only administrators using a trusted database connection can change assignments.
-- `messenger_conversations` is unique by Page and customer PSID. It tracks the latest message and qualifying inbound timestamp.
+- `messenger_conversations` is unique by Page and customer PSID. It tracks the latest message, qualifying inbound timestamp and cached Messenger customer name.
 - `messenger_messages` deduplicates by Page and Meta message ID. An outbound request UUID prevents repeated browser submissions from dispatching twice.
 - `messenger_reads` tracks each operator's read watermark. Viewing an older snapshot cannot mark a later arrival as read or move an existing watermark backwards.
 
 All tables have RLS. Browser sessions can read only their assigned Pages. They can update only their own read status. The backend authenticates API requests with Supabase `getUser`, uses RLS for reads, and rechecks Page membership inside the server-only send-preparation transaction. The browser supplies a conversation ID and reply text. The backend resolves the sending Page, PSID and credential.
 
-The webhook verifies HMAC SHA-256 over the raw request bytes before parsing, skips unsupported events independently, and durably commits supported messages in one transaction before returning HTTP 200. Persistence failure returns HTTP 503 so Meta can retry. Out-of-order events cannot regress the latest inbound timestamp. Attachments are represented by type labels. Raw event payloads, attachment URLs and customer profile lookups are excluded from storage.
+The webhook verifies HMAC SHA-256 over the raw request bytes before parsing, skips unsupported events independently, and durably commits supported messages in one transaction before returning HTTP 200. Persistence failure returns HTTP 503 so Meta can retry. Out-of-order events cannot regress the latest inbound timestamp. Attachments are represented by type labels. Raw event payloads and attachment URLs are excluded from storage. After an authorized operator loads the inbox or thread, the server requests only `first_name,last_name` from the Messenger User Profile API with that conversation's Page token and app-secret proof. Names are cached per conversation for seven days; unavailable profiles retry after an hour. Each inbox request performs at most four lookups with 2.5-second provider timeouts. An atomic timestamp claim prevents concurrent operators and polls from duplicating lookups. Profile failures retain existing names and never block message delivery. Existing conversations are enriched on their next inbox load. No profile pictures, email addresses or raw profile responses are stored.
 
 ## Reply and recovery behavior
 
@@ -81,6 +81,6 @@ For the Moringa acceptance test, use an account eligible to interact with the de
 
 FNBnB still needs to supply the actual privacy policy and data deletion instructions URLs, retention policy, business portfolio ownership/verification details, valid Page tokens and the review outcome. Set the policy URLs in Meta Basic settings and complete the Messenger App Review and Publish requirements displayed for this app. Record a reviewer walkthrough with test data showing incoming messages, restaurant labels, a manual reply and receipt. After production access is approved, test each Page with a designated account that has no app role. Public access remains unverified until those tests pass.
 
-This build starts with newly delivered events. Historical conversation imports, profile fetching and Human Agent replies require separate product scope and permission decisions.
+This build starts with newly delivered events. Historical conversation imports and Human Agent replies require separate product scope and permission decisions. Messenger names are displayed when Meta grants profile access; otherwise the inbox uses ?Messenger user? rather than inventing a name.
 
 Implementation references include [Supabase SSR auth](https://supabase.com/docs/guides/auth/server-side/creating-a-client), [Meta webhook signatures](https://developers.facebook.com/docs/graph-api/webhooks/getting-started/), and the [Messenger Send API](https://developers.facebook.com/docs/messenger-platform/send-messages/).

@@ -378,3 +378,69 @@ test("an uncertain send cannot dispatch again and a later echo resolves it", asy
     "sent",
   );
 });
+
+test("profile cache claims are atomic and names retain Page-level access control", async () => {
+  await ingest([event("m.profile-cache", moringa, "424242")]);
+  const id = (
+    await db.query<{ id: string }>(
+      "select id from messenger_conversations where page_id=$1 and customer_psid=$2",
+      [moringa, "424242"],
+    )
+  ).rows[0].id;
+  await db.exec("set role service_role");
+  try {
+    const claim = await db.query(
+      "update messenger_conversations set profile_checked_at=clock_timestamp() where id=$1 and profile_checked_at is null returning id",
+      [id],
+    );
+    const repeated = await db.query(
+      "update messenger_conversations set profile_checked_at=clock_timestamp() where id=$1 and profile_checked_at is null returning id",
+      [id],
+    );
+    assert.equal(claim.rows.length, 1);
+    assert.equal(repeated.rows.length, 0);
+    await db.query(
+      "update messenger_conversations set customer_name=$1 where id=$2",
+      ["José Dela Cruz", id],
+    );
+    await assert.rejects(
+      db.query(
+        "update messenger_conversations set customer_name=$1 where id=$2",
+        [" ", id],
+      ),
+    );
+  } finally {
+    await db.exec("reset role");
+  }
+  await db.exec("set role authenticated");
+  try {
+    await db.query("select set_config('request.jwt.claim.sub',$1,false)", [
+      user,
+    ]);
+    const visible = await db.query<{ customer_name: string }>(
+      "select customer_name from messenger_conversations where id=$1",
+      [id],
+    );
+    assert.equal(visible.rows[0].customer_name, "José Dela Cruz");
+    await assert.rejects(
+      db.query(
+        "update messenger_conversations set customer_name='Changed' where id=$1",
+        [id],
+      ),
+    );
+    await db.query("select set_config('request.jwt.claim.sub',$1,false)", [
+      other,
+    ]);
+    assert.equal(
+      (
+        await db.query(
+          "select customer_name from messenger_conversations where id=$1",
+          [id],
+        )
+      ).rows.length,
+      0,
+    );
+  } finally {
+    await db.exec("reset role");
+  }
+});

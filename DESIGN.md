@@ -36,7 +36,7 @@ components:
 
 This product serves FNBnB restaurant operators in El Nido. Its primary task is reading a guest message and replying as the restaurant the guest contacted. The existing shell, restaurant logos, dark sidebar and colored restaurant labels establish the visual identity. This feature extends that shell into an operational inbox.
 
-English is the interface language. Dates and times use `en-PH` and `Asia/Manila`. Guest text may contain any language and is displayed verbatim as plain text. The restaurant logo and name are the recurring signature. Task controls remain quiet and familiar.
+English is the interface language. Dates and times use `en-PH` and `Asia/Manila`. Guest text may contain any language and is displayed verbatim as plain text. The restaurant logo and name are the recurring signature. Conversation lists and chat headers show the full restaurant Page name beside its logo, wrapping onto additional lines instead of clipping. Messenger-provided customer names and their initials identify senders; unavailable names use the truthful label ?Messenger user? without displaying numeric identifiers. Task controls remain quiet and familiar.
 
 ## Colors
 

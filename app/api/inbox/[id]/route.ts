@@ -5,6 +5,7 @@ import {
   sameOrigin,
   UUID,
 } from "@/lib/messenger/http";
+import { refreshConversationProfiles } from "@/lib/messenger/profiles";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,7 @@ export async function GET(
     return json({ error: "Messages could not load. Try again." }, 503);
   }
   return json({
-    conversation: conversation.data,
+    conversation: (await refreshConversationProfiles([conversation.data]))[0],
     messages: messages.data.reverse(),
     next: messages.data.length === 50 ? offset + 50 : null,
   });

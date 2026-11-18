@@ -4,6 +4,8 @@ export type Conversation = {
   id: string;
   page_id: string;
   customer_psid: string;
+  customer_name: string | null;
+  profile_checked_at: string | null;
   last_message_at: string;
   last_inbound_at: string | null;
   last_preview: string;

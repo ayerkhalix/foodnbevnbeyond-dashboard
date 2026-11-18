@@ -1,5 +1,6 @@
 import { json, logFailure, operator } from "@/lib/messenger/http";
 import { isAllowedPage } from "@/lib/messenger/pages";
+import { refreshConversationProfiles } from "@/lib/messenger/profiles";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
   if (reads.error)
     return json({ error: "Read status could not load. Try refreshing." }, 503);
   return json({
-    conversations: conversations.data,
+    conversations: await refreshConversationProfiles(conversations.data),
     pages: pages.data,
     reads: reads.data,
     next: conversations.data.length === 50 ? offset + 50 : null,
