@@ -68,3 +68,106 @@ button:focus-visible, input:focus-visible { outline: 3px solid rgba(228,111,88,.
 .messaging-app.dark .mobile-menu { color: #d3dfe0; }
 .messaging-app.dark .business-link .business-name { color: var(--business-color); }
 .messaging-app.dark .business-link.selected .business-name, .messaging-app.dark .business-link:hover .business-name { filter: brightness(1.18); }
+
+/* Live inbox states extend the established restaurant colors and three-panel shell. */
+:root { --scroll-thumb: #7b8d91; --scroll-track: transparent; --scroll-hover: #526970; --scroll-active: #36565e; }
+* { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: var(--scroll-track); }
+*::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 5px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+*::-webkit-scrollbar-thumb:active { background: var(--scroll-active); }
+::selection { background: #d3e6e3; color: #203039; }
+input, textarea { caret-color: var(--primary); }
+button:disabled { cursor: not-allowed; opacity: .55; }
+button:hover:not(:disabled) { filter: brightness(.96); }
+a { text-underline-offset: .2em; }
+textarea { font: inherit; }
+textarea:focus-visible, a:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.sidebar-container { display: flex; }
+.businesses-panel { height: 100dvh; }
+.profile strong { max-width: 180px; overflow-wrap: anywhere; }
+.signout-button { display: flex; gap: 9px; align-items: center; margin-top: 16px; padding: 10px 0; background: transparent; border: 0; color: #dce5e8; }
+.messaging-workspace { grid-template-columns: minmax(270px, 350px) minmax(0, 1fr); min-height: 0; height: calc(100dvh - 94px); }
+.conversation-panel, .chat-panel { min-height: 0; }
+.conversation-list { flex: 1; scrollbar-gutter: stable; }
+.conversation-header h1 { overflow-wrap: anywhere; }
+.conversation-top time { font-size: 10px; color: #5e7075; white-space: nowrap; }
+.clear-search { display: grid; place-items: center; padding: 4px; border: 0; background: transparent; color: var(--foreground); }
+.clear-search svg { color: inherit; }
+.thread-placeholder { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; text-align: center; gap: 12px; }
+.thread-placeholder h2 { margin: 0; font-size: 20px; }
+.thread-placeholder p { max-width: 36ch; margin: 0; color: var(--muted-foreground); }
+.thread-placeholder > svg { color: #497e83; }
+.thread-timezone { text-align: center; color: #5e7075; font-size: 12px; margin: 0 0 24px; }
+.message-bubble p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.message-bubble time { color: #5e7075; }
+.delivery-state { display: block; margin-top: 3px; font-size: 11px; }
+.attachment-note { font-size: 12px !important; margin-top: 6px !important; }
+.load-more { display: block; min-height: 42px; margin: 14px auto; padding: 9px 14px; background: var(--card); color: var(--foreground); border: 1px solid var(--border); border-radius: 8px; }
+.inline-notice { padding: 14px 18px; background: var(--muted); color: var(--foreground); }
+.inline-notice p { margin: 0 0 8px; }
+.inline-notice button { color: inherit; padding: 6px 10px; border: 1px solid currentColor; border-radius: 6px; background: transparent; }
+.reply-status { min-height: 42px; padding: 10px 24px; background: var(--card); color: var(--foreground); font-size: 12px; border-top: 1px solid var(--border); }
+.composer { box-shadow: none; border-top: 0; padding-bottom: 8px; }
+.composer textarea { width: 100%; flex: 1; min-width: 0; min-height: 52px; max-height: 180px; resize: vertical; padding: 13px; border: 1px solid var(--border); border-radius: 9px; background: var(--background); color: var(--foreground); }
+.composer-help { margin: 0; padding: 0 26px 12px; background: var(--card); color: var(--foreground); font-size: 11px; }
+.send-button { min-width: 100px; justify-content: center; color: #152126; }
+.message-bubble-row.staff .message-bubble time { color: #fff; }
+.business-badge { color: var(--foreground); }
+.business-link .business-name { color: #dce5e8; }
+.messaging-app.dark .business-link .business-name { color: #dce5e8; }
+.auth-page { display: grid; place-items: center; min-height: 100dvh; padding: 28px 20px; background: #edf2f1; }
+.auth-panel { width: min(100%, 420px); padding: 34px; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(32,48,57,.08); }
+.auth-logo { display: block; width: 72px; height: 72px; object-fit: contain; margin-bottom: 24px; }
+.auth-panel h1 { font-size: 25px; line-height: 1.25; margin: 0 0 12px; }
+.auth-panel > p { color: #52666e; }
+.login-form { display: flex; flex-direction: column; }
+.login-form label { margin: 14px 0 6px; font-weight: 600; font-size: 14px; }
+.login-form input { min-width: 0; border: 1px solid var(--border); background: var(--card); color: var(--foreground); border-radius: 8px; padding: 11px 13px; }
+.form-status { min-height: 50px; padding: 10px 0; font-size: 13px; color: var(--foreground); }
+.login-help { font-size: 12px; color: var(--foreground); margin: 18px 0 0; }
+.session-recovery { padding: 20px; background: var(--card); border-bottom: 1px solid var(--border); }
+.session-recovery h2, .session-recovery p { margin: 0 0 8px; }
+.session-recovery .login-form { max-width: 420px; }
+.messaging-app.dark { --scroll-thumb: #8b9ea4; --scroll-hover: #aec2c5; --scroll-active: #d5e6e5; }
+.messaging-app.dark .thread-timezone, .messaging-app.dark .conversation-top time, .messaging-app.dark .message-bubble time { color: #bdcdcf; }
+.messaging-app.dark .message-bubble-row.staff .message-bubble time { color: #fff; }
+.messaging-app.dark .reply-status, .messaging-app.dark .composer-help { background: #1b292f; }
+@media (max-width: 1100px) and (min-width: 901px) {
+  .businesses-panel { width: 235px; flex-basis: 235px; }
+  .messaging-workspace { grid-template-columns: minmax(270px, 300px) minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .messaging-app { display: block; }
+  .sidebar-container { display: none; }
+  .sidebar-container.is-open { display: block; position: absolute; z-index: 30; top: 74px; left: 0; width: min(340px, 100%); max-height: calc(100dvh - 74px); overflow: auto; }
+  .sidebar-container .businesses-panel { width: 100%; height: auto; min-height: 440px; }
+  .close-mobile { display: block; }
+  .mobile-menu { display: grid; position: absolute; z-index: 20; top: 17px; left: 12px; place-items: center; border: 0; background: transparent; color: #526469; padding: 8px; }
+  .topbar { height: 74px; min-height: 74px; padding: 15px 17px 15px 54px; }
+  .topbar h2 { font-size: 19px; }
+  .topbar-actions { gap: 8px; }
+  .inbox-status { display: none; }
+  .messaging-workspace { display: block; height: calc(100dvh - 74px); }
+  .conversation-panel, .chat-panel { height: 100%; }
+  .view-conversations .chat-panel, .view-chat .conversation-panel { display: none; }
+  .view-chat .chat-panel { display: flex; }
+  .back-button { display: inline-flex; }
+  .chat-header { padding: 14px; }
+  .chat-person { min-width: 0; }
+  .chat-person .business-badge { max-width: 200px; }
+  .composer { padding: 12px 12px 8px; }
+  .composer .send-button { min-width: 48px; height: 48px; }
+  .composer .send-button span { display: none; }
+  .composer-help { padding-left: 14px; }
+  .reply-status { padding: 10px 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+  * { scrollbar-color: auto; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid Highlight; }
+}
